@@ -101,6 +101,9 @@ public class ConsoleSocket implements Runnable{
 					}else if( cmd[0].equals("add") ){
 						// syntax of add ------------------------------
 						
+					}else if( cmd[0].equals("image") ){
+						// syntax of image ------------------------------
+						
 					}else if( cmd[0].equals("clear") ){
 						// syntax of add ------------------------------
 						
