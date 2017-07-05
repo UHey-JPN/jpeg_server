@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -25,16 +27,61 @@ public class Image {
 		this.file = file;
 	}
 	
+	
 	/**
-	 * プロトコルに従ってファイルを送信。
+	 * プロトコルに従ってファイルを送信。InetSocketAddressを受け取る。
 	 * 送信するデータは次のような感じ
 	 * <p style="padding-left:2em">
-	 *   image add {@literal <name><CR><LF>}<br>
+	 *   name={@literal <name><CR><LF>}<br>
 	 *   size=123456{@literal <CR><LF>}<br>
 	 *   DATA本体<br>
 	 * </p>
 	 * 
-	 * @param out - ファイルを送信する先を指定。
+	 * @param addr - InetSocketAddress ファイルを送信する先を指定。
+	 * @return
+	 * {@code true} : 送信処理が正常に終了。<br>
+	 * {@code false} : 送信処理が正常に終了。
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	public boolean upload(InetSocketAddress addr) throws FileNotFoundException{
+		// データ送信用のソケットを準備
+		Socket soc = null;
+		try {
+			soc = new Socket();
+			soc.connect(addr, 200);
+			soc.setSoTimeout(2000);
+			OutputStream out = soc.getOutputStream();
+			log_mes.log_println("connected to server("+ soc.getRemoteSocketAddress() +")");
+			
+			boolean result = this.upload(out);
+			soc.close();
+			return result;
+			
+		} catch (IOException e) {
+			log_mes.log_print(e);
+			try {
+				if(soc != null)
+					soc.close();
+			} catch (IOException e1) {
+				log_mes.log_print(e1);
+			}
+			return false;
+		}
+		
+	}
+	
+	
+	/**
+	 * プロトコルに従ってファイルを送信。OutputStreamを受け取る。
+	 * 送信するデータは次のような感じ
+	 * <p style="padding-left:2em">
+	 *   name={@literal <name><CR><LF>}<br>
+	 *   size=123456{@literal <CR><LF>}<br>
+	 *   DATA本体<br>
+	 * </p>
+	 * 
+	 * @param addr - OutputStream ファイルを送信する先を指定。
 	 * @return
 	 * {@code true} : 送信処理が正常に終了。<br>
 	 * {@code false} : 送信処理が正常に終了。
@@ -42,10 +89,12 @@ public class Image {
 	 * @throws FileNotFoundException
 	 */
 	public boolean upload(OutputStream out) throws FileNotFoundException{
+		// データ送信用のソケットを準備
+
 		// コマンドとファイルサイズの出力
 		try {
 			String size_info = "";
-			size_info += "image add " + file.getName() + CRLF;
+			size_info += "name=" + file.getName() + CRLF;
 			size_info += "size=" + Long.toString(file.length()) + CRLF;
 			out.write(size_info.getBytes());
 		} catch (IOException e) {
