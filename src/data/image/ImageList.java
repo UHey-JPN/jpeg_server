@@ -1,7 +1,6 @@
 package data.image;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +17,7 @@ public class ImageList {
 		this.folder = new File(img_folder);
 		this.log_mes = log_mes;
 		
+		
 		// 画像用に指示された場所がフォルダーかどうかを確認する
 		if( !folder.isDirectory() ){
 			log_mes.log_println("Image Folder " + img_folder + "is not a directory.");
@@ -30,11 +30,7 @@ public class ImageList {
 		img_list.clear();
 		File[] list = this.folder.listFiles();
 		for(File f : list){
-			try {
-				img_list.add(new Image(f, log_mes));
-			} catch (FileNotFoundException e) {
-				log_mes.log_println("File " + f.getName() + "is listed, but it isn't found.");
-			}
+			img_list.add(new Image(f, log_mes));
 		}
 	}
 

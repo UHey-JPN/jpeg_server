@@ -3,7 +3,9 @@ package data.image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -19,12 +21,17 @@ public class Image {
 	
 	private LogMessageAdapter log_mes;
 	
-	public Image(File file, LogMessageAdapter log_mes) throws FileNotFoundException{
-		if( !file.exists() ){
-			throw new FileNotFoundException();
-		}
+	public Image(File file, LogMessageAdapter log_mes){
 		this.log_mes = log_mes;
 		this.file = file;
+		
+		if( !file.exists() ){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				log_mes.log_print(e);
+			}
+		}
 	}
 	
 	
@@ -119,6 +126,72 @@ public class Image {
 			log_mes.log_print(e);
 			return false;
 		}
+	}
+	
+	public boolean receive(InputStream in){
+		String header;
+		
+		// 改行が2つ来るまで待つ
+		try {
+			byte[] buf = new byte[512];
+			
+			for(int i = 0; ; i++){
+				if( i >= buf.length ) return false;					// バッファーのオーバーラン
+				if( in.available() > 0 ) buf[i] = (byte)in.read();	// Readから読み出せるなら読み出す
+				header = new String(buf, 0, i+1);					// ヘッダー情報を保存
+				if( (header+"line").split(CRLF).length == 3 ) break;// 改行で区切って、3つ以上
+			}
+		} catch (IOException e) {
+			log_mes.log_print(e);
+			return false;
+		}
+		
+		// ヘッダー情報を抽出
+		String[] header_line = header.split(CRLF);
+		String[] header_info = new String[header_line.length];
+		for(int i = 0; i < header_line.length ; i++){
+			header_info[i] = header_line[i].split("=")[1];
+		}
+		
+		// ヘッダー情報の確認（ファイル名）
+		if( header_info[0].matches(file.getName()) ){
+			log_mes.log_println("File which name is different is uploaded.");
+			return false;
+		}
+		
+		// データの読み込みと書き込み
+		{
+			byte[] buffer = new byte[512];
+			
+			// データの書き込み
+			FileOutputStream fout = null;
+			try {
+				fout = new FileOutputStream(file);
+				int len = 0;
+				while( (len = in.read(buffer)) > 0 ){
+					fout.write(buffer, 0, len);
+				}
+			} catch (IOException e) {
+				log_mes.log_print(e);
+				return false;
+			} finally {
+				try {
+					if( fout != null )
+					fout.close();
+				} catch (IOException e) {
+					log_mes.log_print(e);
+					return false;
+				}
+			}
+		}
+		
+		// ファイルサイズの確認
+		if( file.length() != Integer.parseInt(header_info[1]) ){
+			return false;
+		}
+		
+		return true;
+		
 	}
 	
 	/**
