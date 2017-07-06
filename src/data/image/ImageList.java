@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +50,7 @@ public class ImageList {
 				img = new Image(new File(name), log_mes);
 			} catch (IOException e1) {
 				out.println("err:illegal file name or another err");
+				log_mes.log_print(e1);
 				return;
 			}
 		}
@@ -57,6 +59,7 @@ public class ImageList {
 		try {
 			// 待機用ソケットの生成
 			listen = new ServerSocket(0, 1);
+			listen.setSoTimeout(1000); // 1秒以内に接続が来なければタイムアウト
 			
 			// ソケットを通知して、接続待ち
 			String addr = InetAddress.getLocalHost().getHostAddress();
@@ -70,14 +73,19 @@ public class ImageList {
 			if(result){
 				out.println("err:error has occurred during upload");
 			}else{
+				img_list.add(img);
 				out.println("OK");
 			}
 
+		} catch (SocketTimeoutException e) {
+			log_mes.log_println("time out(wait connection from client to upload image)");
+			img.delete();
+			
 		} catch (IOException e) {
 			log_mes.log_print(e);
 			out.println("err:IOExceptino has occurred about socket");
 			
-		} finally {
+	    } finally {
 			try {
 				if( soc != null) soc.close();
 				if( listen != null ) listen.close();
