@@ -37,12 +37,8 @@ public class Image {
 	
 	/**
 	 * プロトコルに従ってファイルを送信。InetSocketAddressを受け取る。
-	 * 送信するデータは次のような感じ
-	 * <p style="padding-left:2em">
-	 *   name={@literal <name><CR><LF>}<br>
-	 *   size=123456{@literal <CR><LF>}<br>
-	 *   DATA本体<br>
-	 * </p>
+	 * このメソッドではソケットを開いて、管理するのみ。
+	 * 実際の送信はupload(OutputStream)メソッドが実行。
 	 * 
 	 * @param addr - InetSocketAddress ファイルを送信する先を指定。
 	 * @return
@@ -128,6 +124,13 @@ public class Image {
 		}
 	}
 	
+	
+	/**
+	 * データ用のストリームを受け取って、ファイルに出力するメソッド。
+	 * 
+	 * @param in - データ用のInputStream
+	 * @return 保存に成功したら{@code true}、失敗したら{@code false}
+	 */
 	public boolean receive(InputStream in){
 		String header;
 		
@@ -193,6 +196,26 @@ public class Image {
 		return true;
 		
 	}
+
+	/**
+	 * 管理下にあるファイルを削除する。オブジェクトを破棄する前に呼ばれるべき。
+	 * @return ファイルがなくなれば{@code true}を返す。
+	 */
+	public boolean delete(){
+		if( file.exists() ){
+			return file.delete();
+		}
+		return true;
+	}
+	
+	/**
+	 * ファイルの名前を取得する関数。
+	 * 
+	 * @return ファイル名をStringで返す。
+	 */
+	public String get_name(){
+		return file.getName();
+	}
 	
 	/**
 	 * MD5を文字列形式で取得
@@ -209,6 +232,7 @@ public class Image {
 		}
 		return sb.toString();
 	}
+	
 	
 	/**
 	 * ハッシュ値をMD5で計算する。
