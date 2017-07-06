@@ -49,7 +49,6 @@ public class Image {
 		try {
 			soc = new Socket();
 			soc.connect(addr, 200);
-			soc.setSoTimeout(2000);
 			OutputStream out = soc.getOutputStream();
 			log_mes.log_println("connected to server("+ soc.getRemoteSocketAddress() +")");
 			
