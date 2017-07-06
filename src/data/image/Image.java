@@ -21,16 +21,12 @@ public class Image {
 	
 	private LogMessageAdapter log_mes;
 	
-	public Image(File file, LogMessageAdapter log_mes){
+	public Image(File file, LogMessageAdapter log_mes) throws IOException{
 		this.log_mes = log_mes;
 		this.file = file;
 		
 		if( !file.exists() ){
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				log_mes.log_print(e);
-			}
+			file.createNewFile();
 		}
 	}
 	

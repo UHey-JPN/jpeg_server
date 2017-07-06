@@ -45,7 +45,12 @@ public class ImageList {
 			img = this.get(name);
 		} catch (FileNotFoundException e) {
 			log_mes.log_println("create file " + name);
-			img = new Image(new File(name), log_mes);
+			try {
+				img = new Image(new File(name), log_mes);
+			} catch (IOException e1) {
+				out.println("err:illegal file name or another err");
+				return;
+			}
 		}
 		
 		// ソケットを通知して、接続待ち
@@ -55,7 +60,7 @@ public class ImageList {
 			
 			// ソケットを通知して、接続待ち
 			String addr = InetAddress.getLocalHost().getHostAddress();
-			out.println(addr + "," + listen.getLocalPort() );
+			out.println("OK:" + addr + "," + listen.getLocalPort() );
 			soc = listen.accept();
 			
 			// データの受信
@@ -96,7 +101,11 @@ public class ImageList {
 		img_list.clear();
 		File[] list = this.folder.listFiles();
 		for(File f : list){
-			img_list.add(new Image(f, log_mes));
+			try {
+				img_list.add(new Image(f, log_mes));
+			} catch (IOException e) {
+				log_mes.log_print(e);
+			}
 		}
 	}
 
