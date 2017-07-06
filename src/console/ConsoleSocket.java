@@ -20,8 +20,7 @@ public class ConsoleSocket implements Runnable{
 
 	public ConsoleSocket(Executor ex, LogMessageAdapter log_mes) {
 		try {
-			listen = new ServerSocket(0, 2);
-			// listen = new ServerSocket(55123, 2);
+			listen = new ServerSocket(50000, 2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
