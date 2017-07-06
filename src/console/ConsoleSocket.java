@@ -75,6 +75,7 @@ public class ConsoleSocket implements Runnable{
 						// syntax of image ------------------------------
 						if( cmd[1].equals("add") ){
 							img_list.receive_img(cmd[2], out);
+							System.out.println("upload finished.");
 						}
 					}else if( cmd[0].equals("clear") ){
 						// syntax of add ------------------------------
