@@ -152,8 +152,9 @@ public class Image {
 		}
 		
 		// ヘッダー情報の確認（ファイル名）
-		if( header_info[0].matches(file.getName()) ){
-			log_mes.log_println("File which name is different is uploaded.");
+		if( !header_info[0].equals(file.getName()) ){
+			String detail = "(command="+file.getName()+", uploaded="+header_info[0]+")";
+			log_mes.log_println("File name is different" + detail);
 			return false;
 		}
 		
