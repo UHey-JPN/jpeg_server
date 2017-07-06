@@ -47,7 +47,7 @@ public class ImageList {
 		} catch (FileNotFoundException e) {
 			log_mes.log_println("create file " + name);
 			try {
-				img = new Image(new File(name), log_mes);
+				img = new Image(new File(folder.getPath() + File.separator + name), log_mes);
 			} catch (IOException e1) {
 				out.println("err:illegal file name or another err");
 				log_mes.log_print(e1);
