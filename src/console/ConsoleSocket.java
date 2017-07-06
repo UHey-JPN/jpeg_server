@@ -8,13 +8,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executor;
 
+import data.image.ImageList;
+import window.main.LogMessageAdapter;
+
 
 public class ConsoleSocket implements Runnable{
 	private ServerSocket listen = null;
 	private BufferedReader in = null;
 	private PrintWriter out = null;
+	private ImageList img_list = null;
 
-	public ConsoleSocket(Executor ex) {
+	public ConsoleSocket(Executor ex, LogMessageAdapter log_mes) {
 		try {
 			listen = new ServerSocket(0, 2);
 			// listen = new ServerSocket(55123, 2);
@@ -22,6 +26,8 @@ public class ConsoleSocket implements Runnable{
 			e.printStackTrace();
 		}
 		System.out.println("Console socket is opened(port number = " + get_local_port() + ").");
+		
+		img_list = new ImageList("DB/img/", log_mes);
 		
 		// スレッドの起動
 		ex.execute(this);
@@ -68,7 +74,9 @@ public class ConsoleSocket implements Runnable{
 						
 					}else if( cmd[0].equals("image") ){
 						// syntax of image ------------------------------
-						
+						if( cmd[1].equals("add") ){
+							img_list.receive_img(cmd[2], out);
+						}
 					}else if( cmd[0].equals("clear") ){
 						// syntax of add ------------------------------
 						
