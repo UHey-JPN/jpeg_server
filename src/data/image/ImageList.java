@@ -36,6 +36,14 @@ public class ImageList {
 		}
 	}
 	
+	/**
+	 * 画像を受信するメソッド。
+	 * 結果出力用のアウトプットストリームとコマンドラインで受け取ったファイル名を受け取り、
+	 * 画像受信を行う。その際、新しくソケットを生成して、データ用のコネクションを作る。
+	 * 
+	 * @param name - コマンドラインで受け取ったファイル名
+	 * @param out - 実行結果を出力するためのストリーム
+	 */
 	public void receive_img(String name, PrintWriter out){
 		Image img;
 		ServerSocket listen = null;
@@ -96,6 +104,13 @@ public class ImageList {
 		
 	}
 	
+	/**
+	 * ファイル名を指定して、Imageクラスを取得するメソッド
+	 * 
+	 * @param name - 取得したいファイル名
+	 * @return ファイルが存在し、インスタンスが生成されていれば、Imageクラスを返す。
+	 * @throws FileNotFoundException ファイルが存在しない、または、インスタンスが生成されていないとき。
+	 */
 	public Image get(String name) throws FileNotFoundException{
 		for(Image img : img_list){
 			if( img.get_name().equals(name) ){
@@ -105,6 +120,10 @@ public class ImageList {
 		throw new FileNotFoundException(name + "is not found.");
 	}
 	
+	/**
+	 * フォルダー内の画像リストを更新する。
+	 * たぶん、事あるごとに呼び出したほうが良い
+	 */
 	public void update_list(){
 		img_list.clear();
 		File[] list = this.folder.listFiles();
