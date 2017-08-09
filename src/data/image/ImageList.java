@@ -15,6 +15,8 @@ import java.util.List;
 import window.main.LogMessageAdapter;
 
 public class ImageList {
+	public static final String CRLF = "\r\n";
+
 	private List<Image> img_list;
 	private File folder;
 	private LogMessageAdapter log_mes;
@@ -136,4 +138,21 @@ public class ImageList {
 		}
 	}
 
+	/**
+	 * 管理下のファイルの名前とハッシュ値（MD5）をリストとして返す。
+	 * 
+	 * @return
+	 */
+	public String get_md5_list(){
+		String ret = "";
+		for(Image img : img_list){
+			try {
+				ret += img.get_name() + "," + img.get_md5_str() + CRLF;
+			} catch (FileNotFoundException e) {
+				log_mes.log_print(e);
+			}
+		}
+		
+		return ret;
+	}
 }
