@@ -18,7 +18,7 @@ public class ConsoleSocket implements Runnable{
 	private PrintWriter out = null;
 	private ImageList img_list = null;
 
-	public ConsoleSocket(Executor ex, LogMessageAdapter log_mes) {
+	public ConsoleSocket(Executor ex, LogMessageAdapter log_mes, ImageList img_list) {
 		try {
 			listen = new ServerSocket(50000, 2);
 		} catch (IOException e) {
@@ -26,7 +26,7 @@ public class ConsoleSocket implements Runnable{
 		}
 		System.out.println("Console socket is opened(port number = " + get_local_port() + ").");
 		
-		img_list = new ImageList("DB/img/", log_mes);
+		this.img_list = img_list;
 		
 		// スレッドの起動
 		ex.execute(this);
