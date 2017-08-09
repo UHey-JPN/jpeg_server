@@ -99,7 +99,22 @@ public class Image {
 			log_mes.log_print(e);
 			return false;
 		}
-		
+
+		return upload_data(out);
+	}
+	
+	/**
+	 * プロトコルに従ってファイルを送信。OutputStreamを受け取る。
+	 * ファイルのデータ部分のみ送信する。
+	 * 
+	 * @param addr - OutputStream ファイルを送信する先を指定。
+	 * @return
+	 * {@code true} : 送信処理が正常に終了。<br>
+	 * {@code false} : 送信処理が正常に終了。
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	public boolean upload_data(OutputStream out) throws FileNotFoundException{	
 		// ファイルデータの出力
 		try {
 			int len;

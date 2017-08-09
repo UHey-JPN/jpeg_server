@@ -1,15 +1,19 @@
 package data.communication;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import data.image.Image;
 import data.image.ImageList;
 import data.main.Database;
 
 class ThreadDatabase implements Runnable {
+	public static final String CRLF = "\r\n";
+	
 	private Socket soc;
 	private Database database;
 	private ImageList img_list;
@@ -35,7 +39,7 @@ class ThreadDatabase implements Runnable {
 
 			if( line == null ) return;
 			cmd = line.split(",");
-
+			
 			if( cmd[0].equals("robot") ){
 				// get robot list ----------------------
 
@@ -45,9 +49,20 @@ class ThreadDatabase implements Runnable {
 			}else if( cmd[0].equals("tournament") ){
 				// get tournament ----------------------
 
-			}else if( cmd[0].equals("tournament") ){
-				// get tournament ----------------------
-				out.println("ACK");
+			}else if( cmd[0].equals("image") ){
+				// get image ----------------------
+				if(cmd.length != 2){
+					out.println("NAK:ileagal command.".getBytes());
+				}else{
+					try {
+						Image img = img_list.get(cmd[1]);
+						soc.getOutputStream().write( ("ACK"+CRLF).getBytes() );
+						img.upload_data(soc.getOutputStream());
+						
+					} catch (FileNotFoundException e){
+						out.println("NAK:cannot find such a file(" + cmd[1] + ").");
+					}
+				}
 				
 			}else{
 				// cancel the operation
