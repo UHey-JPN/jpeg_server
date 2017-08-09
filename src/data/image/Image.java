@@ -50,7 +50,7 @@ public class Image {
 			soc = new Socket();
 			soc.connect(addr, 200);
 			OutputStream out = soc.getOutputStream();
-			log_mes.log_println("connected to server("+ soc.getRemoteSocketAddress() +")");
+			log_mes.log_println("connected to image server("+ soc.getRemoteSocketAddress() +")");
 			
 			boolean result = this.upload(out);
 			soc.close();
