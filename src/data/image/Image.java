@@ -54,6 +54,11 @@ public class Image {
 			
 			boolean result = this.upload(out);
 			soc.close();
+			if( result ){
+				log_mes.log_println("  -> succeeded to upload " + file.getName());
+			}else{
+				log_mes.log_println("  -> failed to upload " + file.getName());
+			}
 			return result;
 			
 		} catch (IOException e) {
