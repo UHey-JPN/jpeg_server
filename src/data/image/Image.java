@@ -150,7 +150,8 @@ public class Image {
 			
 			for(int i = 0; ; i++){
 				if( i >= buf.length ) return false;					// バッファーのオーバーラン
-				if( in.available() > 0 ) buf[i] = (byte)in.read();	// Readから読み出せるなら読み出す
+				while( in.available() < 1 );
+				buf[i] = (byte)in.read();	// Readから読み出せるなら読み出す
 				header = new String(buf, 0, i+1);					// ヘッダー情報を保存
 				if( (header+"line").split(CRLF).length == 3 ) break;// 改行で区切って、3つ以上
 			}
