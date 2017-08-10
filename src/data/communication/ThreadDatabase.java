@@ -56,7 +56,8 @@ class ThreadDatabase implements Runnable {
 				}else{
 					try {
 						Image img = img_list.get(cmd[1]);
-						soc.getOutputStream().write( ("ACK"+CRLF).getBytes() );
+						String ack = "ACK:" + img.size() + CRLF;
+						soc.getOutputStream().write( ack.getBytes() );
 						img.upload_data(soc.getOutputStream());
 						
 					} catch (FileNotFoundException e){
