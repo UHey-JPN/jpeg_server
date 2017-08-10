@@ -274,4 +274,8 @@ public class Image {
 		}
 	}
 
+	public long size() {
+		return file.length();
+	}
+
 }
