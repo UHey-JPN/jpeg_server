@@ -36,8 +36,6 @@ public class ImageList {
 			log_mes.log_println("Image Folder " + img_folder + "is not a directory.");
 			System.exit(1);
 		}
-		
-		this.update_list();
 	}
 	
 	/**
