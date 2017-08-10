@@ -68,7 +68,7 @@ class ThreadDatabase implements Runnable {
 			}else{
 				// cancel the operation
 				out.println("NAK:there is no such a command(" + cmd[0] + ").");
-				System.out.println("Requested data is failed");
+				System.out.println("Request data is failed :" + line);
 			}
 
 		} catch (IOException e) {
