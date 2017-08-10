@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 import data.image.Image;
 import data.image.ImageList;
@@ -71,6 +72,8 @@ class ThreadDatabase implements Runnable {
 				System.out.println("Request data is failed :" + line);
 			}
 
+		} catch (SocketException e){
+			System.out.println("client close the stream.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
